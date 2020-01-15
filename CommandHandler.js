@@ -31,7 +31,7 @@ class CommandHandler {
 
         if (files.length <= 0) return this.head.error('No commands to load!');
         const fileAmount = `${jsFiles.length}`;
-        this.head.log(`Found ${fileAmount} files to load!\n`);
+        this.head.log(`Found ${fileAmount} commands to load!`);
 
         for (const f of jsFiles) {
             const file = require(folder + f);
@@ -40,13 +40,11 @@ class CommandHandler {
             const name = cmd.name;
             commands.set(name, cmd);
 
-            this.head.log(`Loading command: '${name}'`);
+            this.head.log(`Loading command: ${name}.js`);
             for (const alias of cmd.alias) {
                 aliases.set(alias, name);
             }
         }
-
-        this.head.log('Done loading commands!');
         this.commands = commands;
         this.aliases = aliases;
     }
