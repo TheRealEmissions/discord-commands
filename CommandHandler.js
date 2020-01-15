@@ -8,9 +8,9 @@ class CommandHandler {
 
     constructor(data = {}, head) {
 
-        if (!data.folder) head.error("No folder specified.");
+        if (!data.folder) return head.error("No folder specified.");
         this.folder = data.folder;
-        if(!data.prefix) head.error("No prefix specified.");
+        if(!data.prefix) return head.error("No prefix specified.");
         this.head = head;
         if (!Array.isArray(data.prefix)) data.prefix = [data.prefix];
         data.prefix.sort((a, b) => a.length < b.length);
