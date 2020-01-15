@@ -6,11 +6,12 @@ class CommandHandler {
      * @memberof CommandHandler
      */
 
-    constructor(data = {}) {
+    constructor(data = {}, head) {
 
-        if (!data.folder) throw new Error("No folder specified.");
+        if (!data.folder) head.error("No folder specified.");
         this.folder = data.folder;
-        if(!data.prefix) throw new Error("No prefix specified.");
+        if(!data.prefix) head.error("No prefix specified.");
+        this.head = head;
         if (!Array.isArray(data.prefix)) data.prefix = [data.prefix];
         data.prefix.sort((a, b) => a.length < b.length);
         this.prefix = data.prefix;
@@ -28,9 +29,9 @@ class CommandHandler {
             .forEach(nested => fs.readdirSync(folder + nested).forEach(f => files.push(nested + '/' + f)));
         const jsFiles = files.filter(f => f.endsWith('.js'));
 
-        if (files.length <= 0) throw new Error('No commands to load!');
+        if (files.length <= 0) return this.head.error('No commands to load!');
         const fileAmount = `${jsFiles.length}`;
-        console.log(`Found ${fileAmount} files to load!\n`);
+        this.head.log(`Found ${fileAmount} files to load!\n`);
 
         for (const f of jsFiles) {
             const file = require(folder + f);
@@ -39,13 +40,13 @@ class CommandHandler {
             const name = cmd.name;
             commands.set(name, cmd);
 
-            console.log(`Loading command: '${name}'`);
+            this.head.log(`Loading command: '${name}'`);
             for (const alias of cmd.alias) {
                 aliases.set(alias, name);
             }
         }
 
-        console.log('Done loading commands!');
+        this.head.log('Done loading commands!');
         this.commands = commands;
         this.aliases = aliases;
     }
